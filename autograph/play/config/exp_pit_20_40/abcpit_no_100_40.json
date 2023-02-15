@@ -1,0 +1,140 @@
+{
+    automaton: {
+    spec: "F(a) & F(c) & F(b) & F(G(pit))",
+    params: [
+      {
+        name: "a",
+        func: "mine_inventory",
+        params: {
+          inventory_item: "itemA",
+          quantity: 1
+        }
+      },
+      {
+        name: "b",
+        func: "mine_inventory",
+        params: {
+          inventory_item: "itemB",
+          quantity: 1
+        }
+      },
+      {
+        name: "c",
+        func: "mine_inventory",
+        params: {
+          inventory_item: "itemC",
+          quantity: 1
+        }
+      },
+      {
+        name: "pit",
+        func: "info_aut",
+        params: {
+          apname: "pit"
+        }
+      }
+    ],
+    terminate_on_accept: true,
+    termination_accept_reward: 1
+  },
+  env: {
+    type: "minecraft",
+
+    max_episode_len: 100,
+    max_len_reward: 0,
+    params: {
+      fixed_across_episodes: true,
+      initial_position: null,
+      placements: [
+        {
+          tile: {
+            ap_name: "itemA",
+            consumable: true,
+            grid_letter: "a",
+            inventory_modifier: {
+              "itemA": +1
+            }
+          },
+          parlay_placement: .33
+        },
+        {
+          tile: {
+            ap_name: "itemB",
+            consumable: true,
+            grid_letter: "b",
+            inventory_modifier: {
+              "itemB": +1
+            }
+          },
+          parlay_placement: .66
+        },
+        {
+          tile: {
+            ap_name: "itemC",
+            consumable: true,
+            grid_letter: "c",
+            inventory_modifier: {
+              "itemC": +1
+            }
+          },
+          parlay_placement: 1
+        },
+        {
+          tile: {
+            ap_name: "pit",
+            consumable: false,
+            grid_letter: "#",
+            inventory_modifier: {
+
+            }
+          },
+        }
+      ],
+      inventory: [
+        {
+          name: "itemA",
+          capacity: 1,
+          default_quantity: 0
+        },
+        {
+          name: "itemB",
+          capacity: 1,
+          default_quantity: 0
+        },
+        {
+          name: "itemC",
+          capacity: 1,
+          default_quantity: 0
+        }
+      ],
+      shape: [
+        10,
+        10
+      ]
+    }
+  },
+  discount: 1,
+  episode_runner: {
+    type: "mcts_aut_episode",
+    params: {
+      batch_size: 4,
+      num_batches: 10,
+      c_aut: 0,
+      c_puct: 1,
+      c_sigma: 1,
+      c_intrins: 0
+    }
+  },
+  training: {
+    learning_rate: .001,
+    replay_buffer: 100000,
+    train_rounds: 10,
+    optimizer: "Adam",
+    network: "mine_mazenet_v1",
+    min_trace_to_train: 100
+  }
+}
+
+
+
+
